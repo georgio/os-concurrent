@@ -6,7 +6,7 @@
 #include <sys/times.h>
 
 void *calculate_primes_thread(void *arguments);
-unsigned long calculate_primes(int slave_id, int num_slaves, unsigned long max_prime);
+void calculate_primes(int slave_id, int num_slaves, unsigned long max_prime);
 
 // this struct will contain the command line arguments
 // which will be passed to the function that is to be called
@@ -69,9 +69,9 @@ int main(int argc, char *argv[]) {
         return 4;
     }
 
-    double delta = ((double)abs((end.tv_usec - start.tv_usec))) / 1000;
+    unsigned int delta = (end.tv_usec - start.tv_usec) / 1000;
 
-    printf("This machine calculated all prime numbers under %lu using %d slaves in %lf milliseconds.\n",
+    printf("This machine calculated all prime numbers under %lu using %d slaves in %u milliseconds.\n",
            max_prime, num_slaves, delta);
     return 0;
 }
@@ -98,12 +98,12 @@ void *calculate_primes_thread(void *arguments) {
         num += 2 * args->num_slaves;
     }
     gettimeofday(&end, NULL);
-    double delta = ((double)(end.tv_usec - start.tv_usec)) / 1000;
-    printf("Thread %d computed %lu prime numbers in %lf milliseconds.\n", args->slave_id, primes, delta);
+    unsigned int delta = (end.tv_usec - start.tv_usec) / 1000;
+    printf("Thread %d computed %lu prime numbers in %u milliseconds.\n", args->slave_id, primes, delta);
     return NULL;
 }
 
-unsigned long calculate_primes(int slave_id, int num_slaves, unsigned long max_prime) {
+void calculate_primes(int slave_id, int num_slaves, unsigned long max_prime) {
     struct timeval start, end;
     gettimeofday(&start, NULL);
 
@@ -124,6 +124,6 @@ unsigned long calculate_primes(int slave_id, int num_slaves, unsigned long max_p
         num += 2 * num_slaves;
     }
     gettimeofday(&end, NULL);
-    double delta = ((double)(end.tv_usec - start.tv_usec)) / 1000;
-    printf("Process %d computed %lu prime numbers in %lf milliseconds.\n", slave_id, primes, delta);
+    unsigned int delta = (end.tv_usec - start.tv_usec) / 1000;
+    printf("Process %d computed %lu prime numbers in %u milliseconds.\n", slave_id, primes, delta);
 }
